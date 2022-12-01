@@ -15,6 +15,7 @@ using namespace std;
     int Graph::addVertex(){
       int num = vertices.size();
       vertices.insert(num);
+      return num;
     }
     
     /* Adds the given edge with the provided weight to the graph.
@@ -33,7 +34,7 @@ using namespace std;
       }
       if(isVertex1 && isVertex2){
          edges.insert(newEdge);
-       weights.insert(pair(newEdge,weight));
+         weights.insert(make_pair(newEdge,weight));
       } else 
       cout<<"Error! Corresponding Vertices Not Found!"<<endl;
 
@@ -115,7 +116,7 @@ using namespace std;
                newEdge.first = (int)text[0];
                newEdge.second = (int)text[2];
                weight = text[4];
-               if(!isEdge){
+               if(!isEdge(newEdge)){
                addEdge(newEdge,weight);
                adjList[newEdge.first].insert(newEdge.second);
                }
@@ -173,14 +174,14 @@ using namespace std;
 
     void Graph::lowestReachable(){
       bool reached;
-      int min = NULL;
+      int min;
          for(int i = 0; i<vertices.size();i++){
             for(int j = vertices.size(); j>0;i--){
                reached = isReachable(i,j);
                if(j!=i && reached){
                   min = j;
                }
-               if(min!=NULL){
+               if(min!=0){
                cout<<"The lowest reacheable vertex for "<<i<<" is "<<min<<endl;
                } else 
                cout<<"The lowest reachable vertext for "<<i<<" doesn't exist";
