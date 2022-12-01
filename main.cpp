@@ -11,7 +11,7 @@ int main(int argc, const char * argv[]) {
     Graph graph;
     graph.generateGraph(argv[1]);
     graph.printGraph();
-    graph.lowestReachable();
+   graph.lowestReachable();
     
     return 0;
 }

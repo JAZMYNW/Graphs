@@ -59,12 +59,13 @@ public:
      The lowest reachable vertex for 4 is 1
      The lowest reachable vertex for 5 doesn't exist */
     void lowestReachable();
+    bool isReachable(int s, int d);
     
 private:
     set<int> vertices;              /* The set of vertices of the graph */
     set<directedEdge> edges;        /* the set of edges of the graph */
     map<directedEdge, int> weights; /* A mapping between edges and their weights */
-    vector<set<int>> adjList;       /* a vector of vectors to represent an adjacency list */
+    vector<set<int> > adjList;       /* a vector of vectors to represent an adjacency list */
 };
 
 #endif /* Graph_h */
