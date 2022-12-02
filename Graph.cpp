@@ -3,17 +3,17 @@
 #include <fstream>
 #include <string>
 #include <list>
+#include <vector>
 
 using namespace std;
 
     Graph::Graph(){
-
     }
     
     /* Adds a vertex to the graph.
        Returns the ID of the added vertex. */
     int Graph::addVertex(){
-      int num = vertices.size();
+      int num = getNumVertices();
       vertices.insert(num);
       return num;
     }
@@ -34,7 +34,7 @@ using namespace std;
       }
       if(isVertex1 && isVertex2){
          edges.insert(newEdge);
-         weights.insert(make_pair(newEdge,weight));
+         weights.insert(pair<directedEdge, int>(newEdge,weight));
       } else 
       cout<<"Error! Corresponding Vertices Not Found!"<<endl;
 
@@ -98,98 +98,117 @@ using namespace std;
        Returns the constructed graph. */
     void Graph::generateGraph(string fileName){
       ifstream f;
-      string text;
+      f.open(fileName);
+      
+      string text1, text2;
       int count = 0;
       int vertnum;
+      int edgenum;
+      int weight, source, dest, prevsource=0;
       directedEdge newEdge;
-      int weight;
-      f.open(fileName);
+      set<int> adjverts;
+   
+      
+
       if(f.is_open()){
-         while(getline(f,text)){
+         while(!f.eof()){
             if(count==0){
-               vertnum = text[0];
+               f >> vertnum >> edgenum >> text1 >> text2;
                for(int i = 0; i<vertnum; i++){
                   addVertex();
                }
                count++;
             }else{
-               newEdge.first = (int)text[0];
-               newEdge.second = (int)text[2];
-               weight = text[4];
+               count++;
+               f >> source >> dest >> weight;
+               newEdge.first = source;
+               newEdge.second = dest;
                if(!isEdge(newEdge)){
                addEdge(newEdge,weight);
-               adjList[newEdge.first].insert(newEdge.second);
-               }
-
+                  if(source!=prevsource && count!=1){
+                     adjList.push_back(adjverts);
+                     adjverts.clear();
+                  }
+                adjverts.insert(dest);
+                if(count==edgenum+1){
+                  adjList.push_back(adjverts);
+                }
             }
-
+            prevsource = source;
          }
-
-      }else 
+         int diff = adjList.size()-vertnum;
+         if(diff!=0){
+            for(int j = 0; j<diff;j++){
+               adjverts.clear();
+               adjList.push_back(adjverts);
+            }
+            
+         }
+      }
+      }else {
       cout<<"Error! File Not Opened!"<<endl;
+      }
+   }
 
-    }
-    bool Graph::isReachable(int s, int d){
-    bool *visited = new bool[vertices.size()];
-    for (int i = 0; i < vertices.size(); i++)
+   bool Graph::isReachable(int s, int d){ //using BFS to find if theres a path between two vertices
+   int vertnum = vertices.size();
+   bool *visited = new bool[vertnum];
+    for (int i = 0; i < vertnum; i++)
         visited[i] = false;
- 
     list<int> queue;
- 
-    // Mark the current node as visited and enqueue it
     visited[s] = true;
     queue.push_back(s);
- 
-    // it will be used to get all adjacent vertices of a vertex
-    list<int>::iterator i;
- 
-    while (!queue.empty())
-    {
-        // Dequeue a vertex from queue and print it
-        s = queue.front();
-        queue.pop_front();
- 
-        // Get all adjacent vertices of the dequeued vertex s
-        // If a adjacent has not been visited, then mark it visited
-        // and enqueue it
+   
+    while (!queue.empty()){
+       s = queue.front();
         for (auto x:adjList[s]){
-            // If this adjacent node is the destination node, then
-            // return true
+           if(adjList[s].empty())
+           queue.pop_front();
             if (x == d)
                 return true;
- 
-            // Else, continue to do BFS
             if (!visited[x])
             {
                 visited[x] = true;
                 queue.push_back(x);
+                if(adjList[x].empty())
+                queue.pop_back();
             }
-        }
+        } 
+    queue.pop_front();
     }
-     
-    // If BFS is complete without visiting d
+   
     return false;
 }
 
 
-    void Graph::lowestReachable(){
-      bool reached;
-      int min;
-         for(int i = 0; i<vertices.size();i++){
-            for(int j = vertices.size(); j>0;i--){
-               reached = isReachable(i,j);
-               if(j!=i && reached){
-                  min = j;
-               }
-               if(min!=0){
-               cout<<"The lowest reacheable vertex for "<<i<<" is "<<min<<endl;
-               } else 
-               cout<<"The lowest reachable vertext for "<<i<<" doesn't exist";
-            }
-         }
-         
+   void Graph::lowestReachable(){
+      //Found the lowest reachable using a nested for loop to check possibility of all paths 
+      //If the adjacency is is empty for given vertex it prints that the lowest reachable doesn't exist
+      int vertnum = vertices.size();
+      int sum = 0;
+      bool reached = false;
       
-
-        
-    }
-
+      int min=0;
+         
+         cout<< adjList.size();
+         for(int i = 0; i<vertnum;i++){
+            
+            for(int j = 0; j<vertnum;j++){
+               if(adjList[i].empty()){
+                  cout<<"The lowest reacheable vertex for "<<i<<" doesn't exist"<<endl;
+                  break;
+               }else{
+               reached = isReachable(i,j);
+            
+               if(reached && j!=i){ //because the loop increments from zero the first vertex to be reached that's not the source is the lowest reachable
+                  sum++;
+                  min = j;
+                  cout<<"The lowest reacheable vertex for "<<i<<" is "<<min<<endl;
+                  break;
+               } 
+               }
+               min = 0;
+            } 
+           
+         } 
+   }
