@@ -191,7 +191,7 @@ using namespace std;
       
       int min=0;
          
-         cout<< adjList.size();
+        
          for(int i = 0; i<vertnum;i++){
             
             for(int j = 0; j<vertnum;j++){
