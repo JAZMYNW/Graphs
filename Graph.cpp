@@ -196,7 +196,7 @@ using namespace std;
             
             for(int j = 0; j<vertnum;j++){
                if(adjList[i].empty()){
-                  cout<<"The lowest reacheable vertex for "<<i<<" doesn't exist"<<endl;
+                  cout<<"The lowest reachable vertex for "<<i<<" doesn't exist"<<endl;
                   break;
                }else{
                reached = isReachable(i,j);
