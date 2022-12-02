@@ -4,7 +4,8 @@
 #include <string>
 #include <list>
 #include <vector>
-
+//Implemented lowest reachable through a nested for loop which tests every source destination pair for each vertex as long as the adjacency list is not empty
+//runtime Theta of V+E via aggregate analysis
 using namespace std;
 
     Graph::Graph(){
