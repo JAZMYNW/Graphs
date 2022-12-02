@@ -204,7 +204,7 @@ using namespace std;
                if(reached && j!=i){ //because the loop increments from zero the first vertex to be reached that's not the source is the lowest reachable
                   sum++;
                   min = j;
-                  cout<<"The lowest reacheable vertex for "<<i<<" is "<<min<<endl;
+                  cout<<"The lowest reachable vertex for "<<i<<" is "<<min<<endl;
                   break;
                } 
                }
